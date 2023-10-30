@@ -21,7 +21,7 @@ merged_goals <- merged_goals[, c("Home.Club", "TotalGoals")]
 colnames(merged_goals) <- c("Club", "TotalGoals")
 
 # 1. Equipos chilenos
-chilean_teams <- c("Colo Colo", "Ñublense", "Universidad de Chile", "Universidad Católica", "Unión Española", "Everton CD", "Palestino", "Cobresal")
+chilean_teams <- c("Colo Colo", "Ñublense", "Universidad de Chile", "Universidad Católica", "Unión Española", "Everton CD", "Palestino", "Cobresal", "Deportes Iquique", "Huachipato", "O'Higgins")
 
 # 2. Cantidad de goles
 chilean_goals <- merged_goals[merged_goals$Club %in% chilean_teams, ]
