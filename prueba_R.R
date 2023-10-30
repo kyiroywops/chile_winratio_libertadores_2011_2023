@@ -1,11 +1,12 @@
 # Importar el archivo CSV
+
+# a. Mostrar el archivo CSV
 data <- read.csv("libertadores-results-ds.csv")
 
-# a. Mostrar la cantidad de filas y columnas
+#  b.	Aplicar funciones para analizar el archivo, Nrow(),Ncol(), Head(), Tail(), Str() y Summary()
 num_filas <- nrow(data)
 num_columnas <- ncol(data)
 
-# b. Mostrar las primeras y últimas filas
 head_data <- head(data, n = 6)
 tail_data <- tail(data, n = 6)
 
@@ -39,16 +40,11 @@ partidos_interesantes <- data[data$Home.Score > 2 & data$AwayScore > 2, ]
 # l. Filtrar registros mediante valor String (Character)
 equipos_de_Chile <- data[data$Home.Club %in% c("Colo Colo", "Ñublense", "Universidad de Chile", "Universidad Católica", "Unión Española", "Everton CD", "Palestino", "Cobresal", "Deportes Iquique", "Huachipato", "O'Higgins"), ]
 
-# m. Realizar 3 gráficos
-# Gráfico de Dispersión
-plot(data$Home.Score, data$AwayScore, main = "Goles de equipos chilenos en Libertadores", xlab = "Goles de local", ylab = "Goles de visitante")
-
-# Gráfico de Barras
-barplot(table(data$Home.Club), main = "Número de partidos por equipo local chileno", xlab = "Equipos", ylab = "Número de partidos")
-
-# Gráfico de Barras con filtro
+# Filtrar equipos que pertenecen al fútbol chileno en la segunda gráfica
 equipos_chilenos <- c("Colo Colo", "Ñublense", "Universidad de Chile", "Universidad Católica", "Unión Española", "Everton CD", "Palestino", "Cobresal", "Deportes Iquique", "Huachipato", "O'Higgins")
-barplot(table(data[data$Home.Club %in% equipos_chilenos, ]$Home.Club), main = "Número de partidos por equipo chileno local", xlab = "Equipos", ylab = "Número de partidos")
+
+# Modificar el gráfico de barras para incluir equipos chilenos
+barplot(table(equipos_de_Chile$Home.Club), main = "Número de partidos por equipo local chileno", xlab = "Equipos", ylab = "Número de partidos")
 
 # n. Utilizar facet_wrap para dividir gráficos
 library(ggplot2)
