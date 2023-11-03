@@ -5,6 +5,9 @@ data <- read.csv("libertadores-results-ds.csv")
 num_filas <- nrow(data)
 num_columnas <- ncol(data)
 
+print(num_filas)
+print(num_columnas)
+
 # b. Mostrar las primeras y últimas filas
 head_data <- head(data, n = 6)
 tail_data <- tail(data, n = 6)
