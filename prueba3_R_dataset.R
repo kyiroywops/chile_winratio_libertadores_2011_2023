@@ -6,14 +6,13 @@ library(C50)
 library(caret)
 library(e1071)
 
-# 1. Identificar el conjunto de datos que se utilizará
-# Ya has identificado el conjunto de datos: "libertadores-results-ds.csv"
+Sys.setlocale(category = "LC_ALL", locale = "en_US.UTF-8")  # Cambia "en_US.UTF-8" a tu codificación preferida si es diferente
+
 
 # 2. Cargar los datos a una variable
 data <- read.csv("libertadores-results-ds.csv")
 
 # 3. Eliminar atributos que no sean necesarios utilizar
-# Supongamos que deseamos eliminar las columnas "Date" y "Edition"
 data <- data %>% select(-Date, -Edition)
 
 # 4. Si tiene campos en inglés, cámbielos a español
@@ -44,7 +43,6 @@ plot(modelo_arbol)
 predicciones <- predict(modelo_arbol, datos_prueba)
 
 # 11. Genere una matriz de confusión a través del paquete caret
-library(caret)
 matriz_confusion <- confusionMatrix(predicciones, datos_prueba$Resultado)
 
 # 12. Una vez obtenidos los datos, analice e interprete la información obtenida
