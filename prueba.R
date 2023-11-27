@@ -20,47 +20,55 @@ datosLibertadores$Date <- clean_text(datosLibertadores$Date)
 datosLibertadores$`Home Club` <- clean_text(datosLibertadores$`Home Club`)
 datosLibertadores$`Away Club` <- clean_text(datosLibertadores$`Away Club`)
 
-# 4. Renombrar las columnas al español
-datosLibertadores <- datosLibertadores %>%
-    rename(
-        Edición = Edition,
-        Ronda = Round,
-        Fecha = Date,
-        Club_Local = `Home Club`,
-        Club_Visitante = `Away Club`,
-        Goles_Local = `Home Score`,
-        Goles_Visitante = AwayScore
-    )
 
 
+# 5. Si tiene campos en ingles cámbielos a español
+# Se renombran las columnas de inglés a español para mejorar la interpretación
+datosLibertadores <- datosLibertadores %>% # nolint
+  rename(
+    Edición = Edition,
+    Ronda = Round,
+    Fecha = Date,
+    Club_Local = `Home Club`,
+    Club_Visitante = `Away Club`,
+    Goles_Local = `Home Score`,
+    Goles_Visitante = AwayScore
+  )
 
-# 4. Crear una columna como clase y cambiar valores a 0 y 1
+# 4. Eliminar atributos que no sean necesarios utilizar
+# Se elimina la columna 'Fecha' ya que no será utilizada en el modelo
+datosLibertadores <- datosLibertadores %>% select(-Fecha)
+
+# 6. Seleccione un campo como clase si tiene datos en texto cambiar valores 0 y 1 según corresponda.
+# Crear una columna como clase y cambiar valores a 0 y 1
 datosLibertadores$Resultado_Local <- ifelse(datosLibertadores$Goles_Local > datosLibertadores$Goles_Visitante, 1, 0)
 datosLibertadores$Resultado_Local <- as.factor(datosLibertadores$Resultado_Local)
 
-# 5. Convertir variables categóricas en variables dummy
+# Convertir variables categóricas en variables dummy
 library(fastDummies)
 datosLibertadores <- dummy_cols(datosLibertadores, select_columns = c("Club_Local", "Club_Visitante"), remove_selected_columns = TRUE)
 
-# Eliminar la columna Fecha si aún no lo has hecho
-datosLibertadores <- datosLibertadores %>% select(-Fecha)
 
-# 6. Dividir los datos en entrenamiento (70%) y prueba (30%)
+# 6. Definir datos de entrenamiento con un 70%
+# 7. Definir datos de prueba con un 30%
+# Se divide el conjunto de datos en 70% para entrenamiento y 30% para pruebas
 set.seed(42)
 index <- createDataPartition(datosLibertadores$Resultado_Local, p = 0.7, list = FALSE)
 train_data <- datosLibertadores[index,]
 test_data <- datosLibertadores[-index,]
 
-# 7. Aplicar el proceso de aprendizaje o entrenamiento de clasificación
+# 9. Aplicar el proceso de aprendizaje o entrenamiento de clasificación
 model <- C50::C5.0(Resultado_Local ~ ., data = train_data)
 
-
-# 7. Visualizar el árbol de decisiones
+# 10. Visualice el árbol de decisiones usando plot
+# Visualizar el árbol de decisiones
 library(partykit)
 model_party <- as.party(model)
 plot(model_party)
 
-# 8. Realizar la clasificación usando predict y generar una matriz de confusión
+
+# 11. Una vez entrenado el algoritmo debe realizar la clasificación usando predict # nolint
+# Realizar la clasificación usando predict y generar una matriz de confusión
 predictions <- predict(model, test_data)
 confusion_matrix <- confusionMatrix(predictions, test_data$Resultado_Local)
 print(confusion_matrix)
@@ -68,7 +76,7 @@ print(confusion_matrix)
 
 
 
-# 9. Analizar e interpretar la información obtenida
+# 12. Genere una matriz de confusión a través del paquete caret
 
 # Imprimir la matriz de confusión para tener una vista detallada de los resultados
 print(confusion_matrix)
@@ -88,11 +96,3 @@ print(paste("Especificidad (Specificity): ", especificidad))
 # - 'Sensibilidad' indica la proporción de casos positivos reales que se identificaron correctamente.
 # - 'Especificidad' indica la proporción de casos negativos reales que se identificaron correctamente.
 
-# Análisis adicional basado en los resultados:
-# - ¿El modelo es eficaz para predecir victorias, empates o derrotas?
-# - ¿Hay algún patrón en los errores que el modelo está cometiendo?
-# - ¿Cómo podrían estos resultados ser útiles en un contexto real, como para predecir resultados de partidos futuros?
-# - Consideraciones sobre el sobreajuste (overfitting) y cómo el modelo podría generalizarse a nuevos datos no vistos.
-
-# Notas adicionales:
-# Este análisis depende en gran medida de tus datos y resultados específicos. Adapta este esquema según lo que observes en tus datos y lo que consideres importante destacar.
